@@ -2,6 +2,7 @@ import * as React from "react";
 import "./App.css";
 import { getData, Address } from "./lib/spreadsheet";
 import { Planner } from "./Planner";
+import * as _ from "lodash";
 const { GoogleApiWrapper } = require("google-maps-react");
 import "dotenv";
 import {
@@ -25,7 +26,7 @@ type State = {
 class AppComponent extends React.Component<Props, State> {
   state: State = {
     addresses: [],
-    origin: null,
+    origin: new google.maps.LatLng(57.7089355, 11.9669514),
     selectedUsers: [],
     hasSelected: false
   };
@@ -33,7 +34,8 @@ class AppComponent extends React.Component<Props, State> {
   async componentDidMount() {
     const addresses = await getData();
     this.setState({
-      addresses
+      addresses,
+      selectedUsers: _.sampleSize(addresses, 6)
     });
   }
 

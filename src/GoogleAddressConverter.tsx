@@ -6,10 +6,16 @@ const { GoogleApiWrapper } = require("google-maps-react");
 import {} from "@types/googlemaps";
 import { Address } from "lib/spreadsheet";
 
+
+export type Location = {
+    address: Address;
+    coordinate: google.maps.LatLng;
+}
+
 export type GACChildProps = {
-  google: any;
-  addresses: Address[];
-  latlngs: google.maps.GeocoderResult[];
+    google: any;
+    origin: Location;
+    destinations: Location[];
 };
 
 type Props = {
@@ -42,9 +48,17 @@ class GoogleAddressConverterComponent extends React.Component<Props, State> {
 
   render() {
     const { latlngs } = this.state;
-
-    const { google, children, addresses } = this.props;
-    return children({ google, addresses, latlngs });
+      const { google, children } = this.props;
+      const destinations: Location[] = [];
+      const origin: Location = {
+        address: {
+              street: "",
+              name: "",
+              area: ""
+          },
+          coordinate: new google.maps.LatLng(1,2)
+      };
+    return children({ google, destinations, origin });
   }
 }
 

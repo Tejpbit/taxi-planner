@@ -1,7 +1,7 @@
 import * as React from "react";
 import "./App.css";
 import { getData, Address } from "./lib/spreadsheet";
-import { MapView } from "./MapView";
+import { Planner } from "./Planner";
 import "dotenv";
 import {
   GoogleAddressConverter,
@@ -53,7 +53,7 @@ export class App extends React.Component<Props, State> {
       <div className="App">
         {hasSelected ? (
           <GoogleAddressConverter addresses={addresses}>
-            {(props: GACChildProps) => <MapView {...props} />}
+            {(props: GACChildProps) => <Planner {...props} />}
           </GoogleAddressConverter>
         ) : (
           <IntroScreen

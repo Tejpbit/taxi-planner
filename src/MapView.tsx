@@ -32,17 +32,10 @@ type Cluster = any;
 
 type Props = {
   google: any;
-  latlngs: google.maps.GeocoderResult[];
+  trips: {[$key: string]: Cluster};
 };
 
-type State = {
-  clusters: Cluster[];
-};
-
-export class MapView extends React.Component<Props, State> {
-  state: State = {
-    clusters: []
-  };
+export class MapView extends React.Component<Props> {
 
   distanceMatrixCallback = (
     response: google.maps.DistanceMatrixResponse,
@@ -52,23 +45,7 @@ export class MapView extends React.Component<Props, State> {
     console.log(status);
   };
 
-  newClustersSet = () => {
-    const google = this.props.google;
-    const origin = new google.maps.LatLng(57.6689928, 11.965793);
-    const service = new google.maps.DistanceMatrixService();
-    console.log("asdasd", this.state.clusters[0].cluster);
-    service.getDistanceMatrix(
-      {
-        origins: [origin],
-        destinations: this.state.clusters[0].cluster.map(
-          (pair: any) => new google.maps.LatLng(pair[0], pair[1])
-        ),
-        travelMode: "DRIVING"
-      },
-      this.distanceMatrixCallback
-    );
-  };
-
+  /*
   onMapClicked = (e: Event) => {
     kmeans.clusterize(vectors, { k: 2 }, (err: Error, res: Cluster[]) => {
       if (err) console.error(err);
@@ -83,15 +60,18 @@ export class MapView extends React.Component<Props, State> {
       }
     });
   };
+*/
 
   onMarkerClicked = (e: Event) => {
     console.log(e);
   };
 
   render() {
-    const { clusters } = this.state;
-    const { google, latlngs } = this.props;
-    console.log(clusters);
+    const { google, trips } = this.props;
+    console.log("helo", trips);
+    const clusters: any[] = [];
+    const latlngs: any[] = [];
+
 
     const markerData = _.flatMap(clusters, (cluster, i) =>
       cluster.cluster.map((coordPair: Number[], i2: Number) => (
@@ -114,7 +94,7 @@ export class MapView extends React.Component<Props, State> {
         <Map
           google={google}
           zoom={14}
-          onClick={this.onMapClicked}
+          //onClick={this.onMapClicked}
           initialCenter={{
             lat: 57.7089355,
             lng: 11.9669514
@@ -135,17 +115,4 @@ export class MapView extends React.Component<Props, State> {
   }
 }
 
-/*
 
-
-<Marker onClick={this.onMarkerClicked}
-                  name={'Current location'} />
-
-          <InfoWindow onClose={this.onInfoWindowClose}>
-            <div>
-              <h1>{this.state.selectedPlace.name}</h1>
-            </div>
-          </InfoWindow>
-
-
-* */

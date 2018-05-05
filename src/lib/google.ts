@@ -90,6 +90,10 @@ const geocodeAddress = _.memoize(
   }
 );
 
+export const getAddressForUser = (google: any, address: Address) => {
+  return getAddress(google, `${address.street}, ${address.area}`);
+};
+
 export const getAddress = async (google: any, address: string) => {
   const geocode = getGeocoder(google);
   if (!geocode) {

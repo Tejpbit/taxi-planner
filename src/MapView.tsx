@@ -4,7 +4,7 @@ import {} from "@types/googlemaps";
 import {ClusterWithLegs} from "./Planner";
 import {Location} from "./GoogleAddressConverter";
 
-const { Map, InfoWindow, Marker } = require("google-maps-react");
+const { Map, InfoWindow, Marker, Polyline } = require("google-maps-react");
 
 const tilesPaths = [
   require("./tiles/tiles000.png"),
@@ -51,6 +51,28 @@ export class MapView extends React.Component<Props> {
       ))
     );
 
+      const tripsCoordinates: any[][] = trips.map(trips => {
+            return [{lat: this.props.origin.coordinate.lat(), lng: this.props.origin.coordinate.lng()}, ..._.flatMap(trips.legs, leg => [
+                {lat: leg.start_location.lat(), lng: leg.start_location.lng()},
+                {lat: leg.end_location.lat(), lng: leg.end_location.lng()},
+            ])]
+      });
+
+
+
+      const polylines = tripsCoordinates.map((tc, index) => {
+          return <Polyline
+              key={index}
+            path={tc}
+              strokeWeight={2}
+          />
+      });
+
+      const triangleCoords = [
+          {lat: 57.7089355, lng: 11.9669514},
+          {lat: 58.7089355, lng: 12.9669514},
+      ];
+
     return (
       <div>
         <Map
@@ -62,14 +84,22 @@ export class MapView extends React.Component<Props> {
             lng: 11.9669514
           }}
         >
+
+
             <Marker position={this.props.origin.coordinate} />
-          {markerData}
+            {markerData}
+
+            {polylines}
+
+
+
         </Map>
-        <InfoWindow visible={true}>
-          <div>
-            <h1>helo</h1>
-          </div>
-        </InfoWindow>
+          <InfoWindow visible={true}>
+              <div>
+                  <h1>helo</h1>
+              </div>
+          </InfoWindow>
+
       </div>
     );
   }

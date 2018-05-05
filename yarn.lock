@@ -4605,6 +4605,12 @@ node-int64@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/node-int64/-/node-int64-0.4.0.tgz#87a9065cdb355d3182d8f94ce11188b825c68a3b"
 
+node-kmeans@^1.1.8:
+  version "1.1.8"
+  resolved "https://registry.yarnpkg.com/node-kmeans/-/node-kmeans-1.1.8.tgz#abfc87d18fa3c473470bf0e6b6d683eec5446c92"
+  dependencies:
+    underscore "1.4.2"
+
 node-libs-browser@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/node-libs-browser/-/node-libs-browser-2.1.0.tgz#5f94263d404f6e44767d726901fff05478d600df"
@@ -6689,6 +6695,10 @@ uglifyjs-webpack-plugin@^0.4.6:
     source-map "^0.5.6"
     uglify-js "^2.8.29"
     webpack-sources "^1.0.1"
+
+underscore@1.4.2:
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.4.2.tgz#cb2aae6a7999a89fd55aaee75bce0311698cebfb"
 
 union-value@^1.0.0:
   version "1.0.0"

@@ -1,14 +1,7 @@
 import React, { Component } from "react";
-import { Map, InfoWindow, Marker, GoogleApiWrapper } from "google-maps-react";
+import { Map, InfoWindow, Marker } from "google-maps-react";
 import _ from "lodash";
 import kmeans from "node-kmeans";
-import { getAddress } from "./lib/google-geocode";
-
-
-
-
-
-
 
 const vectors = [
   [57.7089355, 11.9669514],
@@ -33,10 +26,9 @@ const tilesPaths = [
   require("./tiles/tiles011.png")
 ];
 
-class MapView extends Component {
+export class MapView extends Component {
   state = {
-    clusters: [],
-    latlngs: []
+    clusters: []
   };
 
   onMapClicked = e => {
@@ -64,47 +56,37 @@ class MapView extends Component {
     service.getDistanceMatrix(
       {
         origins: [origin],
-        destinations: this.state.clusters[0].cluster.map(pair => new google.maps.LatLng(pair[0], pair[1])),
-        travelMode: 'DRIVING'
-      }, this.distanceMatrixCallback);
+        destinations: this.state.clusters[0].cluster.map(
+          pair => new google.maps.LatLng(pair[0], pair[1])
+        ),
+        travelMode: "DRIVING"
+      },
+      this.distanceMatrixCallback
+    );
   };
-
-
 
   onMapClicked = e => {
     kmeans.clusterize(vectors, { k: 2 }, (err, res) => {
       if (err) console.error(err);
       else {
-        this.setState({
-          clusters: res
-        }, this.newClustersSet);
+        this.setState(
+          {
+            clusters: res
+          },
+          this.newClustersSet
+        );
         console.log("%o", res);
       }
     });
-
-
   };
 
   onMarkerClicked = e => {
     console.log(e);
   };
 
-  async componentDidUpdate(prevProps, prevState) {
-    const { google, addresses } = this.props;
-
-    if (addresses !== prevProps.addresses) {
-      const latlngs = await Promise.all(
-        _.take(addresses, 10).map(addr => getAddress(google, addr))
-      );
-      this.setState({
-        latlngs
-      });
-    }
-  }
-
   render() {
-    const { clusters, latlngs } = this.state;
-    const { google } = this.props;
+    const { clusters } = this.state;
+    const { google, latlngs } = this.props;
     console.log(clusters);
 
     const markerData = _.flatMap(clusters, (cluster, i) =>
@@ -148,10 +130,6 @@ class MapView extends Component {
     );
   }
 }
-
-export default GoogleApiWrapper({
-  apiKey: process.env.REACT_APP_GOOGLE_MAPS_KEY
-})(MapView);
 
 /*
 

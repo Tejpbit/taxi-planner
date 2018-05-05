@@ -29,14 +29,14 @@ const getGeocoder = _.memoize(google => {
 });
 
 const geocodeAddress = _.memoize(
-  async (address: Address, geocode: GeocodeFn) => {
+  async (address: string, geocode: GeocodeFn) => {
     return await geocode({
-      address: `${address.street}, ${address.area}`
+      address
     });
   }
 );
 
-export const getAddress = async (google: any, address: Address) => {
+export const getAddress = async (google: any, address: string) => {
   const geocode = getGeocoder(google);
   if (!geocode) {
     return null;

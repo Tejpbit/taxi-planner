@@ -1,8 +1,8 @@
 import * as React from "react";
 import * as _ from "lodash";
 import {} from "@types/googlemaps";
-import {ClusterWithLegs} from "./Planner";
-import {Location} from "./GoogleAddressConverter";
+import { ClusterWithLegs } from "./Planner";
+import { Location } from "./GoogleAddressConverter";
 
 const { Map, InfoWindow, Marker, Polyline } = require("google-maps-react");
 
@@ -28,6 +28,7 @@ type Props = {
 };
 
 export class MapView extends React.Component<Props> {
+<<<<<<< HEAD
 
 
     onMarkerClicked = (e: Event) => {
@@ -99,6 +100,52 @@ export class MapView extends React.Component<Props> {
             </div>
         );
     }
+=======
+  onMarkerClicked = (e: Event) => {
+    console.log(e);
+  };
+
+  render() {
+    const { google, trips } = this.props;
+
+    const markerData = _.flatMap(trips, (trip, i) =>
+      trip.legs.map((leg, i2) => (
+        <Marker
+          key={`${i}${i2}`}
+          title={`${i}`}
+          position={{
+            lat: leg.end_location.lat(),
+            lng: leg.end_location.lng()
+          }}
+          icon={{
+            url: tilesPaths[i],
+            scaledSize: new google.maps.Size(32, 40)
+          }}
+        />
+      ))
+    );
+
+    return (
+      <div>
+        <Map
+          google={google}
+          zoom={14}
+          //onClick={this.onMapClicked}
+          initialCenter={{
+            lat: 57.7089355,
+            lng: 11.9669514
+          }}
+        >
+          <Marker position={this.props.origin.coordinate} />
+          {markerData}
+        </Map>
+        <InfoWindow visible={true}>
+          <div>
+            <h1>helo</h1>
+          </div>
+        </InfoWindow>
+      </div>
+    );
+  }
+>>>>>>> Styling and origin position
 }
-
-

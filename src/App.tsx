@@ -2,6 +2,7 @@ import * as React from "react";
 import "./App.css";
 import { getData, Address } from "./lib/spreadsheet";
 import { Planner } from "./Planner";
+const { GoogleApiWrapper } = require("google-maps-react");
 import "dotenv";
 import {
   GoogleAddressConverter,
@@ -10,19 +11,23 @@ import {
 import { IntroScreen } from "IntroScreen";
 const logo = require("./logo.svg");
 
-type Props = {};
+type Props = {
+  google: any;
+};
 
 type State = {
   addresses: Address[];
   selectedUsers: Address[];
+  origin: google.maps.LatLng | null;
   hasSelected: boolean;
 };
 
-export class App extends React.Component<Props, State> {
+class AppComponent extends React.Component<Props, State> {
   state: State = {
     addresses: [],
+    origin: null,
     selectedUsers: [],
-    hasSelected: true
+    hasSelected: false
   };
 
   async componentDidMount() {
@@ -31,6 +36,12 @@ export class App extends React.Component<Props, State> {
       addresses
     });
   }
+
+  handleSetOrigin = (origin: google.maps.LatLng) => {
+    this.setState({ origin });
+  };
+
+  handleSetHasSelected = () => this.setState({ hasSelected: true });
 
   toggleUser = (user: Address) => {
     this.setState(state => {
@@ -47,16 +58,20 @@ export class App extends React.Component<Props, State> {
   };
 
   render() {
-    const { addresses, hasSelected, selectedUsers } = this.state;
+    const { google } = this.props;
+    const { addresses, hasSelected, origin, selectedUsers } = this.state;
 
     return (
       <div className="App">
         {hasSelected ? (
-          <GoogleAddressConverter addresses={addresses}>
-            {(props: GACChildProps) => <Planner {...props} />}
+          <GoogleAddressConverter google={google} addresses={selectedUsers}>
+            {(props: GACChildProps) => <Planner origin={origin} {...props} />}
           </GoogleAddressConverter>
         ) : (
           <IntroScreen
+            google={google}
+            setOrigin={this.handleSetOrigin}
+            onClickForwardButton={this.handleSetHasSelected}
             toggleUser={this.toggleUser}
             users={addresses}
             selectedUsers={selectedUsers}
@@ -66,3 +81,7 @@ export class App extends React.Component<Props, State> {
     );
   }
 }
+
+export const App = GoogleApiWrapper({
+  apiKey: process.env.REACT_APP_GOOGLE_MAPS_KEY
+})(AppComponent);

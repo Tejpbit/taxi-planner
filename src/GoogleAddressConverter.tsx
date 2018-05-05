@@ -27,29 +27,27 @@ type State = {
   latlngs: Location[];
 };
 
-class GoogleAddressConverterComponent extends React.Component<Props, State> {
+export class GoogleAddressConverter extends React.Component<Props, State> {
   state: State = {
     latlngs: []
   };
 
-  async componentDidUpdate(prevProps: Props, prevState: State) {
+  async componentDidMount() {
     const { google, addresses } = this.props;
 
-    if (addresses !== prevProps.addresses) {
-      const latlngs = await Promise.all(
-        _.take(addresses, 10).map(addr =>
-          getAddress(google, addr).then(result => {
-            return {
-              address: addr,
-              coordinate: result.geometry.location
-            };
-          })
-        )
-      );
-      this.setState({
-        latlngs
-      });
-    }
+    const latlngs = await Promise.all(
+      addresses.map(addr =>
+        getAddress(google, `${addr.street}, ${addr.area}`).then(result => {
+          return {
+            address: addr,
+            coordinate: result.geometry.location
+          };
+        })
+      )
+    );
+    this.setState({
+      latlngs
+    });
   }
 
   render() {
@@ -63,12 +61,8 @@ class GoogleAddressConverterComponent extends React.Component<Props, State> {
         name: "",
         area: ""
       },
-      coordinate: new google.maps.LatLng(57.7051552,11.9955154)
+      coordinate: new google.maps.LatLng(57.7051552, 11.9955154)
     };
     return children({ google, destinations: latlngs, origin });
   }
 }
-
-export const GoogleAddressConverter = GoogleApiWrapper({
-  apiKey: process.env.REACT_APP_GOOGLE_MAPS_KEY
-})(GoogleAddressConverterComponent);

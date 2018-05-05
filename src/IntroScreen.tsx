@@ -23,12 +23,13 @@ const Topbar = styled.header`
   display: flex;
   flex-direction: row;
   flex: 1;
+  background-color: white;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
   justify-content: space-between;
   align-items: center;
   height: 50px;
-  padding-left: 1em;
-  position: relative;
+  position: fixed;
+  width: 100%;
 `;
 
 const LeftDiv = styled.div`
@@ -63,7 +64,9 @@ export class IntroScreen extends React.Component<Props> {
     return (
       <>
         <Topbar>
-          <img src={logo} style={{ height: "50%" }} />
+          <div style={{ paddingLeft: "1em", height: "50%" }}>
+            <img src={logo} style={{ height: "100%" }} />
+          </div>
           <LeftDiv>
             <img src={leftTriangle} />
             <CenterText
@@ -87,7 +90,9 @@ export class IntroScreen extends React.Component<Props> {
             </CenterText>
           </LeftDiv>
         </Topbar>
-        <div>
+        <div style={{
+          paddingTop: "50px"
+        }}>
           <div>
             <Header>Where from?</Header>
             <div style={{

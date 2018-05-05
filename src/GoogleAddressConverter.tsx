@@ -7,6 +7,8 @@ import {} from "@types/googlemaps";
 import { Address } from "lib/spreadsheet";
 import { load } from "google-maps";
 
+import { Loading } from "./Loading";
+
 export type Location = {
   address: Address;
   coordinate: google.maps.LatLng;
@@ -71,7 +73,7 @@ export class GoogleAddressConverter extends React.Component<Props, State> {
     const { latlngs, loading } = this.state;
     const { google, children } = this.props;
     if (loading) {
-      return <div>Loading</div>;
+      return <Loading />;
     }
     return children({ google, destinations: latlngs });
   }

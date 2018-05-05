@@ -33,7 +33,7 @@ export class MapView extends React.Component<Props> {
   };
 
   render() {
-    const { google, trips } = this.props;
+    const { google, trips, origin } = this.props;
 
     const markerData = _.flatMap(trips, (trip, i) =>
       trip.legs.map((leg, i2) => (
@@ -54,10 +54,7 @@ export class MapView extends React.Component<Props> {
 
     const tripsCoordinates: any[][] = trips.map(trips => {
       return [
-        {
-          lat: this.props.origin.lat(),
-          lng: this.props.origin.lng()
-        },
+          {lat: origin.lat(), lng: origin.lng()},
         ..._.flatMap(trips.legs, leg => [
           { lat: leg.start_location.lat(), lng: leg.start_location.lng() },
           { lat: leg.end_location.lat(), lng: leg.end_location.lng() }
@@ -80,12 +77,9 @@ export class MapView extends React.Component<Props> {
           google={google}
           zoom={14}
           //onClick={this.onMapClicked}
-          initialCenter={{
-            lat: 57.7089355,
-            lng: 11.9669514
-          }}
+          initialCenter={{lat: origin.lat(), lng: origin.lng()}}
         >
-          <Marker position={this.props.origin} />
+          <Marker position={{lat: origin.lat(), lng: origin.lng()}} />
           {markerData}
           {polylines}
         </Map>

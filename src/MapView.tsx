@@ -36,7 +36,6 @@ export class MapView extends React.Component<Props> {
 
   render() {
     const { google, trips } = this.props;
-    console.log("helo", trips);
 
     const markerData = _.flatMap(trips, (trip, i) =>
       trip.legs.map((leg, i2) => (
@@ -51,8 +50,6 @@ export class MapView extends React.Component<Props> {
         />
       ))
     );
-
-    console.log("marker data: ", markerData);
 
     return (
       <div>

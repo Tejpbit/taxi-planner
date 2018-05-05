@@ -63,7 +63,6 @@ export class Planner extends Component<Props, State>{
 
                 if (err) console.error(err);
                 else {
-                    console.log(res);
                     const locationMap: Map<string,Location> = new Map<string, Location>();
                     this.props.destinations.forEach(d => {
                         locationMap.set(`${d.coordinate.lat()}${d.coordinate.lng()}`, d)
@@ -81,13 +80,10 @@ export class Planner extends Component<Props, State>{
     const origin = this.props.origin;
     const service = new google.maps.DirectionsService();
 
-    console.log("clusterDone:", clusters);
-
     clusters.forEach((cluster: Derp, index: Number) => {
 
         const destination = _.head(cluster.cluster).coordinate;
         const waypoints = _.tail(cluster.cluster).map(c => ({location: c.coordinate}));
-        console.log("each cluster", destination, waypoints);
       service.route({
           travelMode: "DRIVING",
           origin: origin.coordinate,
@@ -106,7 +102,6 @@ export class Planner extends Component<Props, State>{
       response: DirectionsResult,
       status: DirectionsStatus
   ) => {
-    console.log("routeCB", cluster, response, status);
 
     const legs = _.first(response.routes).legs;
 
@@ -117,12 +112,9 @@ export class Planner extends Component<Props, State>{
         ]
 
     });
-    console.log("response: ", response);
-    console.log(status);
   };
 
   render() {
-    console.log("clusters in render: ", this.state.clusters);
     return (<div>
           <button onClick={this.plan}>helo</button>
           <MapView google={this.props.google} origin={this.props.origin} trips={this.state.clusters}/>

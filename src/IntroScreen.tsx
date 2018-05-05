@@ -90,13 +90,29 @@ export class IntroScreen extends React.Component<Props> {
         <div>
           <div>
             <Header>Where from?</Header>
-            <input
-              type="text"
-              onInput={(event: React.SyntheticEvent<HTMLInputElement>) =>
-                this.handleInput(event.currentTarget.value)
-              }
-            />
-            {origin && origin.formatted_address}
+            <div style={{
+              display: "flex"
+            }}>
+              <input
+                type="text"
+                onInput={(event: React.SyntheticEvent<HTMLInputElement>) =>
+                  this.handleInput(event.currentTarget.value)
+                }
+                style={{
+                  fontSize: "12pt",
+                  padding: ".5em",
+                  border: "1px #eee solid",
+                  margin: ".5em",
+                  flex: 1
+                }}
+                placeholder="Starting address"
+                list="suggestions"
+              />
+              {origin &&
+                <datalist id="suggestions">
+                  <option value={origin.formatted_address} />
+                </datalist>}
+            </div>
           </div>
 
           <div>

@@ -6,6 +6,8 @@ const sheetsy = require("sheetsy");
 const WORKSHEET_ID = "1hhlHA9pDyzdDFueNdd9mptPMW9Skj-REAr2l16VnPto";
 
 export type Address = {
+  id: Number;
+  photo: string;
   street: string;
   name: string;
   area: string;

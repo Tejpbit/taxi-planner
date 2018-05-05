@@ -7,17 +7,22 @@ import {
   GoogleAddressConverter,
   GACChildProps
 } from "./GoogleAddressConverter";
+import { IntroScreen } from "IntroScreen";
 const logo = require("./logo.svg");
 
 type Props = {};
 
 type State = {
   addresses: Address[];
+  selectedUsers: Address[];
+  hasSelected: boolean;
 };
 
 export class App extends React.Component<Props, State> {
   state: State = {
-    addresses: []
+    addresses: [],
+    selectedUsers: [],
+    hasSelected: false
   };
 
   async componentDidMount() {
@@ -26,18 +31,37 @@ export class App extends React.Component<Props, State> {
       addresses
     });
   }
+
+  toggleUser = (user: Address) => {
+    this.setState(state => {
+      if (state.selectedUsers.indexOf(user) !== -1) {
+        return {
+          selectedUsers: state.selectedUsers.filter(u => u.id !== user.id)
+        };
+      } else {
+        return {
+          selectedUsers: [...state.selectedUsers, user]
+        };
+      }
+    });
+  };
+
   render() {
-    const { addresses } = this.state;
+    const { addresses, hasSelected, selectedUsers } = this.state;
 
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <GoogleAddressConverter addresses={addresses}>
-          {(props: GACChildProps) => <MapView {...props} />}
-        </GoogleAddressConverter>
+        {hasSelected ? (
+          <GoogleAddressConverter addresses={addresses}>
+            {(props: GACChildProps) => <MapView {...props} />}
+          </GoogleAddressConverter>
+        ) : (
+          <IntroScreen
+            toggleUser={this.toggleUser}
+            users={addresses}
+            selectedUsers={selectedUsers}
+          />
+        )}
       </div>
     );
   }

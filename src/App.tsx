@@ -41,7 +41,11 @@ class AppComponent extends React.Component<Props, State> {
     this.setState({ origin });
   };
 
-  handleSetHasSelected = () => this.setState({ hasSelected: true });
+  handleSetHasSelected = () => {
+    if (this.state.origin && this.state.selectedUsers.length > 0) {
+      this.setState({ hasSelected: true });
+    }
+  };
 
   toggleUser = (user: Address) => {
     this.setState(state => {

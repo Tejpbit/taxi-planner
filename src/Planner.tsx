@@ -88,7 +88,7 @@ export class Planner extends Component<Props, State> {
       service.route(
         {
           travelMode: "DRIVING",
-          origin: origin.coordinate,
+          origin,
           destination,
           waypoints,
           optimizeWaypoints: true

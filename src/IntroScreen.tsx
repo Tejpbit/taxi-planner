@@ -47,8 +47,6 @@ export class IntroScreen extends React.Component<Props, State> {
   searchGoogleMaps = async (input: string) => {
     const res = await getAddress(this.props.google, input);
 
-    console.log(res);
-
     this.setState({
       origin: res
     });

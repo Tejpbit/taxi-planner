@@ -63,7 +63,7 @@ class AppComponent extends React.Component<Props, State> {
 
     return (
       <div className="App">
-        {hasSelected ? (
+        {hasSelected && origin ? (
           <GoogleAddressConverter google={google} addresses={selectedUsers}>
             {(props: GACChildProps) => <Planner origin={origin} {...props} />}
           </GoogleAddressConverter>

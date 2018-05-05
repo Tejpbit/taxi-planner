@@ -13,7 +13,7 @@ export type Location = {
 
 export type GACChildProps = {
   google: any;
-  origin: Location;
+  origin: google.maps.LatLng;
   destinations: Location[];
 };
 
@@ -53,16 +53,7 @@ export class GoogleAddressConverter extends React.Component<Props, State> {
   render() {
     const { latlngs } = this.state;
     const { google, children } = this.props;
-    const origin: Location = {
-      address: {
-        id: 0,
-        photo: "",
-        street: "",
-        name: "",
-        area: ""
-      },
-      coordinate: new google.maps.LatLng(57.7051552, 11.9955154)
-    };
+    const origin = new google.maps.LatLng(57.7051552, 11.9955154);
     return children({ google, destinations: latlngs, origin });
   }
 }

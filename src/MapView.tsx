@@ -1,7 +1,9 @@
-import React, { Component } from "react";
-import { Map, InfoWindow, Marker } from "google-maps-react";
-import _ from "lodash";
-import kmeans from "node-kmeans";
+import * as React from "react";
+import * as _ from "lodash";
+import {} from "@types/googlemaps";
+
+const { Map, InfoWindow, Marker } = require("google-maps-react");
+const kmeans = require("node-kmeans");
 
 const vectors = [
   [57.7089355, 11.9669514],
@@ -26,30 +28,32 @@ const tilesPaths = [
   require("./tiles/tiles011.png")
 ];
 
-export class MapView extends Component {
-  state = {
+type Cluster = any;
+
+type Props = {
+  google: any;
+  latlngs: google.maps.GeocoderResult[];
+};
+
+type State = {
+  clusters: Cluster[];
+};
+
+export class MapView extends React.Component<Props, State> {
+  state: State = {
     clusters: []
   };
 
-  onMapClicked = e => {
-    kmeans.clusterize(vectors, { k: 2 }, (err, res) => {
-      if (err) console.error(err);
-      else {
-        this.setState({
-          clusters: res
-        });
-        console.log("%o", res);
-      }
-    });
-  };
-
-  distanceMatrixCallback = (response, status) => {
+  distanceMatrixCallback = (
+    response: google.maps.DistanceMatrixResponse,
+    status: google.maps.DistanceMatrixStatus
+  ) => {
     console.log(response);
     console.log(status);
   };
 
   newClustersSet = () => {
-    const google = window.google;
+    const google = this.props.google;
     const origin = new google.maps.LatLng(57.6689928, 11.965793);
     const service = new google.maps.DistanceMatrixService();
     console.log("asdasd", this.state.clusters[0].cluster);
@@ -57,7 +61,7 @@ export class MapView extends Component {
       {
         origins: [origin],
         destinations: this.state.clusters[0].cluster.map(
-          pair => new google.maps.LatLng(pair[0], pair[1])
+          (pair: any) => new google.maps.LatLng(pair[0], pair[1])
         ),
         travelMode: "DRIVING"
       },
@@ -65,8 +69,8 @@ export class MapView extends Component {
     );
   };
 
-  onMapClicked = e => {
-    kmeans.clusterize(vectors, { k: 2 }, (err, res) => {
+  onMapClicked = (e: Event) => {
+    kmeans.clusterize(vectors, { k: 2 }, (err: Error, res: Cluster[]) => {
       if (err) console.error(err);
       else {
         this.setState(
@@ -80,7 +84,7 @@ export class MapView extends Component {
     });
   };
 
-  onMarkerClicked = e => {
+  onMarkerClicked = (e: Event) => {
     console.log(e);
   };
 
@@ -90,7 +94,7 @@ export class MapView extends Component {
     console.log(clusters);
 
     const markerData = _.flatMap(clusters, (cluster, i) =>
-      cluster.cluster.map((coordPair, i2) => (
+      cluster.cluster.map((coordPair: Number[], i2: Number) => (
         <Marker
           key={`${i}${i2}`}
           title={`${i}`}
@@ -121,7 +125,7 @@ export class MapView extends Component {
             <Marker key={latlng.place_id} position={latlng.geometry.location} />
           ))}
         </Map>
-        <InfoWindow onClose={this.onInfoWindowClose} visible={true}>
+        <InfoWindow visible={true}>
           <div>
             <h1>helo</h1>
           </div>

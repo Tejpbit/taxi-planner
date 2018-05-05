@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "sourceMap": true,
+    "noEmit": true,
+    "baseUrl": "src",
+    "jsx": "react",
+    "lib": ["es6", "dom"]
+  }
+}

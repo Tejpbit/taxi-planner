@@ -1,14 +1,33 @@
-import React, { Component } from "react";
-import _ from "lodash";
+import * as React from "react";
+import * as _ from "lodash";
 import { getAddress } from "./lib/google-geocode";
-import { GoogleApiWrapper } from "google-maps-react";
+const { GoogleApiWrapper } = require("google-maps-react");
 
-class GoogleAddressConverterComponent extends Component {
-  state = {
+import {} from "@types/googlemaps";
+import { Address } from "lib/spreadsheet";
+
+export type GACChildProps = {
+  google: any;
+  addresses: Address[];
+  latlngs: google.maps.GeocoderResult[];
+};
+
+type Props = {
+  google: any;
+  addresses: Address[];
+  children: (props: GACChildProps) => any;
+};
+
+type State = {
+  latlngs: google.maps.GeocoderResult[];
+};
+
+class GoogleAddressConverterComponent extends React.Component<Props, State> {
+  state: State = {
     latlngs: []
   };
 
-  async componentDidUpdate(prevProps, prevState) {
+  async componentDidUpdate(prevProps: Props, prevState: State) {
     const { google, addresses } = this.props;
 
     if (addresses !== prevProps.addresses) {
@@ -23,6 +42,7 @@ class GoogleAddressConverterComponent extends Component {
 
   render() {
     const { latlngs } = this.state;
+
     const { google, children, addresses } = this.props;
     return children({ google, addresses, latlngs });
   }

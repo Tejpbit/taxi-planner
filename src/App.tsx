@@ -1,13 +1,22 @@
-import React, { Component } from "react";
-import logo from "./logo.svg";
+import * as React from "react";
 import "./App.css";
-import { getData } from "./lib/spreadsheet";
+import { getData, Address } from "./lib/spreadsheet";
 import { MapView } from "./MapView";
 import "dotenv";
-import { GoogleAddressConverter } from "./GoogleAddressConverter";
+import {
+  GoogleAddressConverter,
+  GACChildProps
+} from "./GoogleAddressConverter";
+const logo = require("./logo.svg");
 
-class App extends Component {
-  state = {
+type Props = {};
+
+type State = {
+  addresses: Address[];
+};
+
+export class App extends React.Component<Props, State> {
+  state: State = {
     addresses: []
   };
 
@@ -27,11 +36,9 @@ class App extends Component {
           <h1 className="App-title">Welcome to React</h1>
         </header>
         <GoogleAddressConverter addresses={addresses}>
-          {props => <MapView {...props} />}
+          {(props: GACChildProps) => <MapView {...props} />}
         </GoogleAddressConverter>
       </div>
     );
   }
 }
-
-export default App;

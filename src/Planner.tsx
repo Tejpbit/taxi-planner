@@ -8,6 +8,8 @@ import DirectionsResult = google.maps.DirectionsResult;
 import DirectionsStatus = google.maps.DirectionsStatus;
 import { getRouteFn } from "lib/google";
 const uuidv4 = require("uuid/v4");
+import LatLng = google.maps.LatLng;
+
 const kmeans = require("node-kmeans");
 
 interface KMeansCluster {
@@ -105,16 +107,21 @@ export class Planner extends Component<Props, State> {
 
   clusterDone = (cluster: Derp) => {
     const origin = this.props.origin;
+    const service = new google.maps.DirectionsService();
+
+
+
+
     const route = getRouteFn(this.props.google);
-    const destination = _.head(cluster.cluster).coordinate;
-    const waypoints = _.tail(cluster.cluster).map(c => ({
+    const destination = this.mostDistantPoint(origin,cluster.cluster);
+    const waypoints = cluster.cluster.filter(val => val != destination).map(c => ({
       location: c.coordinate,
       stopover: true
     }));
     const request = {
       travelMode: google.maps.TravelMode.DRIVING,
       origin,
-      destination,
+      destination: destination.coordinate,
       waypoints,
       optimizeWaypoints: true
     };
@@ -122,6 +129,19 @@ export class Planner extends Component<Props, State> {
     route(request).then(response => {
       this.routeCallback({ ...cluster, id: uuidv4() }, response);
     });
+  };
+
+  mostDistantPoint = (origin: LatLng, cluster: Location[]): Location => {
+      return _.reduce(
+          cluster,
+          (next, prev) => this.distance(origin, next) > this.distance(origin, prev) ? next : prev,
+          _.first(cluster));
+  };
+
+  distance = (a: LatLng, b: Location): number => {
+      const latDiff: number = Math.abs(a.lat() - b.coordinate.lat())
+      const lngDiff: number = Math.abs(a.lng() - b.coordinate.lng())
+      return latDiff + lngDiff;
   };
 
   routeCallback = (cluster: Cluster, response: DirectionsResult) => {

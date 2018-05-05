@@ -22,13 +22,12 @@ type Props = {
 const Topbar = styled.header`
   display: flex;
   flex-direction: row;
-  flex: 1;
   background-color: white;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
   justify-content: space-between;
   align-items: center;
   height: 50px;
-  position: fixed;
+  position: relative;
   width: 100%;
 `;
 
@@ -40,6 +39,33 @@ const CenterText = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+`;
+
+const Input = styled.input`
+  font-size: 12pt;
+  padding: .5em;
+  border: 1px #eee solid;
+  margin: .2em .5em;
+  flex: 1;
+`;
+
+const Bottombar = styled.div`
+  background-color: #f4f8fb;
+  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.5);
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  padding: .5em 0;
+  display: flex;
+  flex-direction: column;
+`;
+
+const Button = styled.button`
+  font-size: 12pt;
+  padding: .5em;
+  border: none;
+  margin: .3em .5em 0;
+  background-color: #f8e71c;
 `;
 
 export class IntroScreen extends React.Component<Props> {
@@ -91,25 +117,20 @@ export class IntroScreen extends React.Component<Props> {
           </LeftDiv>
         </Topbar>
         <div style={{
-          paddingTop: "50px"
+          flex: 1,
+          overflowY: "auto"
         }}>
           <div>
             <Header>Where from?</Header>
             <div style={{
-              display: "flex"
+              display: "flex",
+              padding: ".6em 0"
             }}>
-              <input
+              <Input
                 type="text"
                 onInput={(event: React.SyntheticEvent<HTMLInputElement>) =>
                   this.handleInput(event.currentTarget.value)
                 }
-                style={{
-                  fontSize: "12pt",
-                  padding: ".5em",
-                  border: "1px #eee solid",
-                  margin: ".5em",
-                  flex: 1
-                }}
                 placeholder="Starting address"
                 list="suggestions"
               />
@@ -134,6 +155,17 @@ export class IntroScreen extends React.Component<Props> {
             })}
           </div>
         </div>
+        <Bottombar>
+          <Input
+            type="text"
+            placeholder="Address"
+          />
+          <Input
+            type="text"
+            placeholder="Name (optional)"
+          />
+          <Button>Add passenger</Button>
+        </Bottombar>
       </>
     );
   }

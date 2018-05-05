@@ -35,7 +35,7 @@ export class User extends React.Component<Props> {
             {user.name}
           </div>
           <div className="user-street">
-            {user.street}
+            {user.street}, {user.area}
           </div>
         </div>
       </div>

@@ -5,6 +5,7 @@ const { GoogleApiWrapper } = require("google-maps-react");
 
 import {} from "@types/googlemaps";
 import { Address } from "lib/spreadsheet";
+import { load } from "google-maps";
 
 export type Location = {
   address: Address;
@@ -24,15 +25,25 @@ type Props = {
 
 type State = {
   latlngs: Location[];
+  loading: boolean;
 };
 
 export class GoogleAddressConverter extends React.Component<Props, State> {
   state: State = {
-    latlngs: []
+    latlngs: [],
+    loading: true
   };
 
-  async componentDidMount() {
+  componentDidMount() {
+    this.updateAddresses();
+  }
+
+  updateAddresses = async () => {
     const { google, addresses } = this.props;
+
+    this.setState({
+      loading: true
+    });
 
     const latlngs = await Promise.all(
       addresses.map(addr =>
@@ -45,13 +56,23 @@ export class GoogleAddressConverter extends React.Component<Props, State> {
       )
     );
     this.setState({
-      latlngs
+      latlngs,
+      loading: false
     });
+  };
+
+  componentDidUpdate(prevProps: Props, prevState: State) {
+    if (prevProps.addresses !== this.props.addresses) {
+      this.updateAddresses();
+    }
   }
 
   render() {
-    const { latlngs } = this.state;
+    const { latlngs, loading } = this.state;
     const { google, children } = this.props;
+    if (loading) {
+      return <div>Loading</div>;
+    }
     return children({ google, destinations: latlngs });
   }
 }

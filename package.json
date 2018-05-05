@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "backoff-promise": "^0.0.3",
     "dotenv": "^5.0.1",
+    "es6-promisify": "^6.0.0",
     "google-maps-react": "^2.0.2",
     "isomorphic-fetch": "^2.2.1",
     "lodash": "^4.17.10",
@@ -23,10 +25,12 @@
     "eject": "react-scripts-ts eject"
   },
   "devDependencies": {
+    "@types/es6-promisify": "^6.0.0",
     "@types/google-maps": "^3.2.0",
     "@types/isomorphic-fetch": "^0.0.34",
     "@types/lodash": "^4.14.108",
     "@types/react": "^16.3.2",
-    "@types/react-dom": "^16.0.5"
+    "@types/react-dom": "^16.0.5",
+    "@types/uuid": "^3.2.1"
   }
 }

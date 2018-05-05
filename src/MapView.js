@@ -4,6 +4,12 @@ import _ from "lodash";
 import kmeans from "node-kmeans";
 import { getAddress } from "./lib/google-geocode";
 
+
+
+
+
+
+
 const vectors = [
   [57.7089355, 11.9669514],
   [57.6877847, 11.9530877],
@@ -45,16 +51,38 @@ class MapView extends Component {
     });
   };
 
+  distanceMatrixCallback = (response, status) => {
+    console.log(response);
+    console.log(status);
+  };
+
+  newClustersSet = () => {
+    const google = window.google;
+    const origin = new google.maps.LatLng(57.6689928, 11.965793);
+    const service = new google.maps.DistanceMatrixService();
+    console.log("asdasd", this.state.clusters[0].cluster);
+    service.getDistanceMatrix(
+      {
+        origins: [origin],
+        destinations: this.state.clusters[0].cluster.map(pair => new google.maps.LatLng(pair[0], pair[1])),
+        travelMode: 'DRIVING'
+      }, this.distanceMatrixCallback);
+  };
+
+
+
   onMapClicked = e => {
     kmeans.clusterize(vectors, { k: 2 }, (err, res) => {
       if (err) console.error(err);
       else {
         this.setState({
           clusters: res
-        });
+        }, this.newClustersSet);
         console.log("%o", res);
       }
     });
+
+
   };
 
   onMarkerClicked = e => {

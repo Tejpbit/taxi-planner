@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import { getData } from "./lib/spreadsheet";
+import MapView from './MapView';
+import "dotenv"
 
 class App extends Component {
   state = {
@@ -28,6 +30,7 @@ class App extends Component {
             {addr.name}, {addr.street}, {addr.area}
           </div>
         ))}
+        <MapView></MapView>
       </div>
     );
   }

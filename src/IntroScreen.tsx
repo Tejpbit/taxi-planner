@@ -3,9 +3,9 @@ import * as _ from "lodash";
 import { Address } from "lib/spreadsheet";
 import styled from "styled-components";
 import { getAddress } from "lib/google-geocode";
+import { User } from "./User";
 
 const logo = require("./logo.svg");
-const check = require("./check.svg");
 const leftTriangle = require("./left-triangle.svg");
 
 type Props = {
@@ -91,52 +91,11 @@ export class IntroScreen extends React.Component<Props> {
             {users.map(user => {
               const userIsSelected = selectedUsers.indexOf(user) !== -1;
               return (
-                <div
-                  key={String(user.id)}
-                  onClick={() => toggleUser(user)}
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    padding: "8px 0"
-                  }}
-                >
-                  <img
-                    src={userIsSelected ? check : user.photo}
-                    style={{
-                      borderRadius: "50%",
-                      height: 30,
-                      width: 30,
-                      margin: "0 10px"
-                    }}
-                    alt="usericon"
-                  />
-                  <div
-                    style={{
-                      display: "flex",
-                      flex: 1,
-                      flexDirection: "column",
-                      alignItems: "flex-start"
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: "flex"
-                      }}
-                    >
-                      {user.name}
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        fontSize: "smaller",
-                        color: "#9b9b9b"
-                      }}
-                    >
-                      {user.street}
-                    </div>
-                  </div>
-                </div>
+                <User
+                  user={user}
+                  toggleUser={toggleUser}
+                  userIsSelected={userIsSelected}
+                />
               );
             })}
           </div>

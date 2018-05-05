@@ -2,7 +2,7 @@ import * as React from "react";
 import * as _ from "lodash";
 import { Address } from "lib/spreadsheet";
 import styled from "styled-components";
-import { getAddress } from "lib/google-geocode";
+import { getAddress } from "lib/google";
 import { User } from "./User";
 
 const logo = require("./logo.svg");

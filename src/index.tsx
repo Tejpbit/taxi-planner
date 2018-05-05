@@ -8,6 +8,12 @@ injectGlobal`
     body {
         font-family: Roboto;
     }
+    html {
+        box-sizing: border-box;
+    }
+    *, *:before, *:after {
+        box-sizing: inherit;
+    }
 `;
 
 ReactDOM.render(<App />, document.getElementById("root"));

@@ -166,14 +166,12 @@ export class Planner extends Component<Props, State> {
 
   render() {
     return (
-      <div>
-        <MapView
-          google={this.props.google}
-          origin={this.props.origin}
-          trips={this.state.clusters}
-          directions={this.state.responses}
-        />
-      </div>
+      <MapView
+        google={this.props.google}
+        origin={this.props.origin}
+        trips={this.state.clusters}
+        directions={this.state.responses}
+      />
     );
   }
 }

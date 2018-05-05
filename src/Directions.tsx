@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import * as _ from "lodash";
+import { colors } from "lib/colors";
 
 type Props = {
   map?: any;
@@ -40,29 +41,6 @@ export class Directions extends React.Component<Props> {
       return null;
     }
 
-    const colors = [
-      "#f53b57",
-      "#3c40c6",
-      "#0fbcf9",
-      "#05c46b",
-      "#ffa801",
-      "#ffdd59",
-      "#ff3f34",
-      "#d2dae2",
-      "#485460",
-      "#808e9b",
-      "#1e272e",
-      "#34e7e4",
-      "#0be881",
-      "#ffd32a",
-      "#3c40c6",
-      "#ef5777",
-      "#ff5e57",
-      "#ffc048",
-      "#4bcffa",
-      "#00d8d6"
-    ];
-
     if (
       !directions ||
       !this.directionsRenderers ||
@@ -76,7 +54,7 @@ export class Directions extends React.Component<Props> {
             },
             markerOptions: {
               icon: {
-                scale: 0.5,
+                scale: 0.3,
                 strokeWeight: 1,
                 fillOpacity: 1,
                 fillColor: colors[i % colors.length],

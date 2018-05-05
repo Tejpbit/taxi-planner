@@ -3,8 +3,10 @@ import * as _ from "lodash";
 import {} from "@types/googlemaps";
 import { ClusterWithLegs } from "./Planner";
 import { Directions } from "./Directions";
+import styled from "styled-components";
+import { TripList } from "TripList";
 
-const { Map, InfoWindow, Marker, Polyline } = require("google-maps-react");
+const { Map, Marker, Polyline } = require("google-maps-react");
 
 const tilesPaths = [
   require("./tiles/tiles000.png"),
@@ -20,6 +22,12 @@ const tilesPaths = [
   require("./tiles/tiles010.png"),
   require("./tiles/tiles011.png")
 ];
+
+const RowWithSidebar = styled.div`
+  display: flex;
+  height: 100%;
+  flex-direction: row;
+`;
 
 type Props = {
   google: any;
@@ -37,8 +45,9 @@ export class MapView extends React.Component<Props> {
     const { google, trips, origin, directions } = this.props;
 
     return (
-      <div>
+      <RowWithSidebar>
         <Map
+          containerStyle={{ position: "relative", flex: 1 }}
           google={google}
           zoom={14}
           //onClick={this.onMapClicked}
@@ -46,12 +55,8 @@ export class MapView extends React.Component<Props> {
         >
           {directions && <Directions directions={directions} />}
         </Map>
-        <InfoWindow visible={true}>
-          <div>
-            <h1>helo</h1>
-          </div>
-        </InfoWindow>
-      </div>
+        <TripList trips={trips} />
+      </RowWithSidebar>
     );
   }
 }

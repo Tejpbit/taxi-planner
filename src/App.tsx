@@ -74,7 +74,9 @@ class AppComponent extends React.Component<Props, State> {
       <div className="App">
         {hasSelected && origin ? (
           <GoogleAddressConverter google={google} addresses={selectedUsers}>
-            {(props: GACChildProps) => <Planner origin={origin} {...props} />}
+            {(props: GACChildProps) => (
+              <Planner origin={origin.geometry.location} {...props} />
+            )}
           </GoogleAddressConverter>
         ) : (
           <IntroScreen

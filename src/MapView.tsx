@@ -2,7 +2,7 @@ import * as React from "react";
 import * as _ from "lodash";
 import {} from "@types/googlemaps";
 import { ClusterWithLegs } from "./Planner";
-import {Directions} from "./Directions";
+import { Directions } from "./Directions";
 
 const { Map, InfoWindow, Marker, Polyline } = require("google-maps-react");
 
@@ -42,10 +42,9 @@ export class MapView extends React.Component<Props> {
           google={google}
           zoom={14}
           //onClick={this.onMapClicked}
-          initialCenter={{lat: origin.lat(), lng: origin.lng()}}
+          initialCenter={{ lat: origin.lat(), lng: origin.lng() }}
         >
-          <Marker position={{lat: origin.lat(), lng: origin.lng()}} />
-          {directions && <Directions directions={directions}/>}
+          {directions && <Directions directions={directions} />}
         </Map>
         <InfoWindow visible={true}>
           <div>

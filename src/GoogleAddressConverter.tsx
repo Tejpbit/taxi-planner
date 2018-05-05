@@ -34,6 +34,10 @@ export class GoogleAddressConverter extends React.Component<Props, State> {
     loading: true
   };
 
+  componentDidMount() {
+    this.updateAddresses();
+  }
+
   updateAddresses = async () => {
     const { google, addresses } = this.props;
 
@@ -56,6 +60,7 @@ export class GoogleAddressConverter extends React.Component<Props, State> {
       loading: false
     });
   };
+
   componentDidUpdate(prevProps: Props, prevState: State) {
     if (prevProps.addresses !== this.props.addresses) {
       this.updateAddresses();

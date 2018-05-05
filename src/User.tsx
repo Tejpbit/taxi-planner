@@ -23,18 +23,18 @@ export class User extends React.Component<Props> {
       <div
         key={String(user.id)}
         onClick={() => toggleUser(user)}
-        className="container"
+        className="user-container"
       >
         <img
           src={userIsSelected ? check : user.photo}
-          className="image"
+          className="user-image"
           alt="usericon"
         />
-        <div className="text-container">
-          <div className="name">
+        <div className="user-text">
+          <div className="user-name">
             {user.name}
           </div>
-          <div className="street">
+          <div className="user-street">
             {user.street}
           </div>
         </div>

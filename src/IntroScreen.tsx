@@ -3,6 +3,7 @@ import * as _ from "lodash";
 import { Address } from "lib/spreadsheet";
 import styled from "styled-components";
 import { getAddress } from "lib/google";
+import { Header } from "./Header";
 import { User } from "./User";
 
 const logo = require("./logo.svg");
@@ -76,7 +77,7 @@ export class IntroScreen extends React.Component<Props> {
         </Topbar>
         <div>
           <div>
-            <div>Where from?</div>
+            <Header>Where from?</Header>
             <input
               type="text"
               onInput={(event: React.SyntheticEvent<HTMLInputElement>) =>
@@ -87,7 +88,7 @@ export class IntroScreen extends React.Component<Props> {
           </div>
 
           <div>
-            <div>Who needs a ride?</div>
+            <Header>Who needs a ride?</Header>
             {users.map(user => {
               const userIsSelected = selectedUsers.indexOf(user) !== -1;
               return (

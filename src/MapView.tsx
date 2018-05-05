@@ -2,7 +2,7 @@ import * as React from "react";
 import * as _ from "lodash";
 import {} from "@types/googlemaps";
 import { ClusterWithLegs } from "./Planner";
-import { Location } from "./GoogleAddressConverter";
+import {Directions} from "./Directions";
 
 const { Map, InfoWindow, Marker, Polyline } = require("google-maps-react");
 
@@ -25,6 +25,7 @@ type Props = {
   google: any;
   trips: ClusterWithLegs[];
   origin: google.maps.LatLng;
+  directions: null | google.maps.DirectionsResult;
 };
 
 export class MapView extends React.Component<Props> {
@@ -33,7 +34,9 @@ export class MapView extends React.Component<Props> {
   };
 
   render() {
-    const { google, trips, origin } = this.props;
+    const { google, trips, origin, directions } = this.props;
+
+    console.log("trips: ", trips);
 
     const markerData = _.flatMap(trips, (trip, i) =>
       trip.legs.map((leg, i2) => (
@@ -52,6 +55,21 @@ export class MapView extends React.Component<Props> {
       ))
     );
 
+      const polylineStrings = _.flattenDeep(trips.map(trip =>
+          trip.legs.map(leg =>
+              leg.steps.map(step => (step as any).polyline
+              )
+          )
+      ));
+      console.log("polylines2", polylineStrings);
+      const polylines = polylineStrings.map((str, index) => {
+        return <Polyline
+            key={index}
+            path={str}
+            strokeWeight={2}
+          />
+      });
+
     const tripsCoordinates: any[][] = trips.map(trips => {
       return [
           {lat: origin.lat(), lng: origin.lng()},
@@ -61,11 +79,11 @@ export class MapView extends React.Component<Props> {
         ])
       ];
     });
-
+/*
     const polylines = tripsCoordinates.map((tc, index) => {
       return <Polyline key={index} path={tc} strokeWeight={2} />;
     });
-
+*/
     const triangleCoords = [
       { lat: 57.7089355, lng: 11.9669514 },
       { lat: 58.7089355, lng: 12.9669514 }
@@ -82,6 +100,7 @@ export class MapView extends React.Component<Props> {
           <Marker position={{lat: origin.lat(), lng: origin.lng()}} />
           {markerData}
           {polylines}
+            {directions && <Directions directions={directions}/>}
         </Map>
         <InfoWindow visible={true}>
           <div>

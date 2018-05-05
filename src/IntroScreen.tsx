@@ -25,7 +25,10 @@ const Topbar = styled.header`
   flex: 1;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
   justify-content: space-between;
+  align-items: center;
   height: 50px;
+  padding-left: 1em;
+  position: relative;
 `;
 
 const LeftDiv = styled.div`
@@ -60,7 +63,7 @@ export class IntroScreen extends React.Component<Props> {
     return (
       <>
         <Topbar>
-          <img src={logo} style={{ maxHeight: "100%", margin: "10px 0" }} />
+          <img src={logo} style={{ height: "50%" }} />
           <LeftDiv>
             <img src={leftTriangle} />
             <CenterText
@@ -68,10 +71,19 @@ export class IntroScreen extends React.Component<Props> {
               style={{
                 backgroundColor: "#F8E71C",
                 flex: 1,
+                padding: "0 1em",
                 cursor: "pointer"
               }}
             >
-              Get cabs for {numberPeople} >
+              Get cabs for
+              <span style={{
+                fontWeight: "bold",
+                padding: "0 .3em 0 .2em",
+                fontSize: "larger"
+              }}>
+                {numberPeople}
+              </span>
+              ->
             </CenterText>
           </LeftDiv>
         </Topbar>

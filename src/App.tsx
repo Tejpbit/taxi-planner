@@ -38,7 +38,7 @@ class AppComponent extends React.Component<Props, State> {
     const addresses = await getData();
     this.setState({
       addresses,
-      selectedUsers: _.sampleSize(addresses, 6)
+      selectedUsers: _.sampleSize(addresses, 12)
     });
   }
 

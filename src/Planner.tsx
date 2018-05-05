@@ -38,13 +38,6 @@ type Props = {
   destinations: Location[];
 };
 
-const vectors = [
-  [57.7089355, 11.9669514],
-  [57.6877847, 11.9530877],
-  [57.7041652, 11.9636228],
-  [57.6827079, 11.9556896],
-  [57.6783956, 11.9470382]
-];
 
 export class Planner extends Component<Props, State> {
   state: State = {
@@ -81,8 +74,8 @@ export class Planner extends Component<Props, State> {
     });
   };
 
-  clusterMore = (currCluster: KMeansCluster, locationMap: Map<string, Location>) => {
-      kmeans.clusterize(vectors, { k: 2 }, (err: Error, res: KMeansCluster[]) => {
+  clusterMore = (cluster: KMeansCluster, locationMap: Map<string, Location>) => {
+      kmeans.clusterize(cluster, { k: 2 }, (err: Error, res: KMeansCluster[]) => {
           if (err) console.error(err);
           else {
               res.forEach(currCluster => {
@@ -103,6 +96,7 @@ export class Planner extends Component<Props, State> {
       const google = this.props.google;
       const origin = this.props.origin;
       const service = new google.maps.DirectionsService();
+      console.log('cluster.cluster', cluster);
       const destination = _.head(cluster.cluster).coordinate;
       const waypoints = _.tail(cluster.cluster).map(c => ({
           location: c.coordinate

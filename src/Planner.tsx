@@ -6,7 +6,7 @@ import { Address } from "./lib/spreadsheet";
 import _ = require("lodash");
 import DirectionsResult = google.maps.DirectionsResult;
 import DirectionsStatus = google.maps.DirectionsStatus;
-
+const uuidv4 = require('uuid/v4');
 const kmeans = require("node-kmeans");
 
 interface KMeansCluster {
@@ -58,45 +58,68 @@ export class Planner extends Component<Props, State> {
       dest.coordinate.lat(),
       dest.coordinate.lng()
     ]);
-    kmeans.clusterize(vectors, { k: 3 }, (err: Error, res: KMeansCluster[]) => {
+
+    const locationMap: Map<string, Location> = new Map<string, Location>();
+    this.props.destinations.forEach(d => {
+        locationMap.set(`${d.coordinate.lat()}${d.coordinate.lng()}`, d);
+    });
+
+    kmeans.clusterize(vectors, { k: Math.ceil(vectors.length/4)}, (err: Error, res: KMeansCluster[]) => {
       if (err) console.error(err);
       else {
-        const locationMap: Map<string, Location> = new Map<string, Location>();
-        this.props.destinations.forEach(d => {
-          locationMap.set(`${d.coordinate.lat()}${d.coordinate.lng()}`, d);
-        });
-        this.clusterDone(
-          res.map(({ centroid, cluster, clusterInd }) => ({
-            centroid,
-            cluster: cluster.map(p => locationMap.get(`${p[0]}${p[1]}`))
-          }))
-        );
+          res.forEach(currCluster => {
+              if(currCluster.cluster.length <= 4) {
+                  this.clusterDone({
+                      centroid: currCluster.centroid,
+                      cluster: currCluster.cluster.map(p => locationMap.get(`${p[0]}${p[1]}`))
+                  })
+              } else {
+                  this.clusterMore(currCluster, locationMap)
+              }
+          })
       }
     });
   };
 
-  clusterDone = (clusters: Derp[]) => {
-    const google = this.props.google;
-    const origin = this.props.origin;
-    const service = new google.maps.DirectionsService();
+  clusterMore = (currCluster: KMeansCluster, locationMap: Map<string, Location>) => {
+      kmeans.clusterize(vectors, { k: 2 }, (err: Error, res: KMeansCluster[]) => {
+          if (err) console.error(err);
+          else {
+              res.forEach(currCluster => {
+                  if(currCluster.cluster.length <= 4) {
+                      this.clusterDone({
+                          centroid: currCluster.centroid,
+                          cluster: currCluster.cluster.map(p => locationMap.get(`${p[0]}${p[1]}`))
+                      })
+                  } else {
+                      this.clusterMore(currCluster, locationMap)
+                  }
+              })
+          }
+      })
+  };
 
-    clusters.forEach((cluster: Derp, index: Number) => {
+  clusterDone = (cluster: Derp) => {
+      const google = this.props.google;
+      const origin = this.props.origin;
+      const service = new google.maps.DirectionsService();
       const destination = _.head(cluster.cluster).coordinate;
       const waypoints = _.tail(cluster.cluster).map(c => ({
-        location: c.coordinate
+          location: c.coordinate
       }));
-      service.route(
-        {
+      const request = {
           travelMode: "DRIVING",
           origin,
           destination,
           waypoints,
           optimizeWaypoints: true
-        },
-        (resp: DirectionsResult, status: DirectionsStatus) =>
-          this.routeCallback({ ...cluster, id: index }, resp, status)
+      };
+      console.log('direction request', JSON.stringify(request));
+      service.route(
+          request,
+          (resp: DirectionsResult, status: DirectionsStatus) =>
+              this.routeCallback({ ...cluster, id: uuidv4() }, resp, status)
       );
-    });
   };
 
   routeCallback = (
@@ -104,6 +127,7 @@ export class Planner extends Component<Props, State> {
     response: DirectionsResult,
     status: DirectionsStatus
   ) => {
+      console.log('routeCallback', status);
     const legs = _.first(response.routes).legs;
 
     this.setState({

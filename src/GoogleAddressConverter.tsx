@@ -6,16 +6,15 @@ const { GoogleApiWrapper } = require("google-maps-react");
 import {} from "@types/googlemaps";
 import { Address } from "lib/spreadsheet";
 
-
 export type Location = {
-    address: Address;
-    coordinate: google.maps.LatLng;
-}
+  address: Address;
+  coordinate: google.maps.LatLng;
+};
 
 export type GACChildProps = {
-    google: any;
-    origin: Location;
-    destinations: Location[];
+  google: any;
+  origin: Location;
+  destinations: Location[];
 };
 
 type Props = {
@@ -25,7 +24,7 @@ type Props = {
 };
 
 type State = {
-  latlngs: google.maps.GeocoderResult[];
+  latlngs: Location[];
 };
 
 class GoogleAddressConverterComponent extends React.Component<Props, State> {
@@ -38,7 +37,14 @@ class GoogleAddressConverterComponent extends React.Component<Props, State> {
 
     if (addresses !== prevProps.addresses) {
       const latlngs = await Promise.all(
-        _.take(addresses, 10).map(addr => getAddress(google, addr))
+        _.take(addresses, 10).map(addr =>
+          getAddress(google, addr).then(result => {
+            return {
+              address: addr,
+              coordinate: result.geometry.location
+            };
+          })
+        )
       );
       this.setState({
         latlngs
@@ -48,19 +54,18 @@ class GoogleAddressConverterComponent extends React.Component<Props, State> {
 
   render() {
     const { latlngs } = this.state;
-      const { google, children } = this.props;
-      const destinations: Location[] = [];
-      const origin: Location = {
-          address: {
-              id: 0,
-              photo: "",
-              street: "",
-              name: "",
-              area: ""
-          },
-          coordinate: new google.maps.LatLng(1,2)
-      };
-    return children({ google, destinations, origin });
+    const { google, children } = this.props;
+    const origin: Location = {
+      address: {
+        id: 0,
+        photo: "",
+        street: "",
+        name: "",
+        area: ""
+      },
+      coordinate: new google.maps.LatLng(1, 2)
+    };
+    return children({ google, destinations: latlngs, origin });
   }
 }
 

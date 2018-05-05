@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as _ from "lodash";
-import { getAddress } from "./lib/google-geocode";
+import { getAddress } from "./lib/google";
 const { GoogleApiWrapper } = require("google-maps-react");
 
 import {} from "@types/googlemaps";

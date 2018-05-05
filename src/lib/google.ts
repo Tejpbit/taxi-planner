@@ -6,7 +6,13 @@ type GeocodeFn = (
   req: google.maps.GeocoderRequest
 ) => Promise<google.maps.GeocoderResult>;
 
-const promisifyGeocoder = (geocoder: google.maps.Geocoder): GeocodeFn => {
+type RouteFn = (
+  req: google.maps.DirectionsRequest
+) => Promise<google.maps.DirectionsResult>;
+
+export const promisifyGeocoder = (
+  geocoder: google.maps.Geocoder
+): GeocodeFn => {
   return (req: google.maps.GeocoderRequest) =>
     new Promise((resolve, reject) => {
       geocoder.geocode(req, (results, status) => {
@@ -18,6 +24,30 @@ const promisifyGeocoder = (geocoder: google.maps.Geocoder): GeocodeFn => {
       });
     });
 };
+
+export const promisifyRoute = (
+  service: google.maps.DirectionsService
+): RouteFn => {
+  return (req: google.maps.DirectionsRequest) =>
+    new Promise((resolve, reject) => {
+      service.route(req, (results, status) => {
+        if (status === google.maps.DirectionsStatus.OK) {
+          resolve(results);
+        } else {
+          reject(status);
+        }
+      });
+    });
+};
+
+export const getRouteFn = _.memoize(google => {
+  if (google) {
+    const service = new google.maps.DirectionsService();
+    return promisifyRoute(service);
+  } else {
+    return null;
+  }
+});
 
 const getGeocoder = _.memoize(google => {
   if (google) {

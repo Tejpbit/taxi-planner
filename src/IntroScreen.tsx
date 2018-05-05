@@ -10,15 +10,12 @@ const leftTriangle = require("./left-triangle.svg");
 
 type Props = {
   google: any;
+  origin: null | google.maps.GeocoderResult;
   onClickForwardButton: (a: any) => any;
   toggleUser: (user: Address) => any;
   selectedUsers: Address[];
   users: Address[];
-  setOrigin: (origin: google.maps.LatLng) => any;
-};
-
-type State = {
-  origin: null | google.maps.GeocoderResult;
+  setOrigin: (origin: google.maps.GeocoderResult) => any;
 };
 
 const Topbar = styled.header`
@@ -40,17 +37,10 @@ const CenterText = styled.div`
   align-items: center;
 `;
 
-export class IntroScreen extends React.Component<Props, State> {
-  state: State = {
-    origin: null
-  };
+export class IntroScreen extends React.Component<Props> {
   searchGoogleMaps = async (input: string) => {
     const res = await getAddress(this.props.google, input);
-
-    this.setState({
-      origin: res
-    });
-    this.props.setOrigin(res.geometry.location);
+    this.props.setOrigin(res);
   };
 
   handleInput = _.debounce(this.searchGoogleMaps, 400);
@@ -60,10 +50,9 @@ export class IntroScreen extends React.Component<Props, State> {
       onClickForwardButton,
       selectedUsers,
       users,
-      toggleUser
+      toggleUser,
+      origin
     } = this.props;
-
-    const { origin } = this.state;
 
     const numberPeople = selectedUsers.length;
 

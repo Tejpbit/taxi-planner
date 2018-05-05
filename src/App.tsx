@@ -19,14 +19,17 @@ type Props = {
 type State = {
   addresses: Address[];
   selectedUsers: Address[];
-  origin: google.maps.LatLng | null;
+  origin: google.maps.GeocoderResult | null;
   hasSelected: boolean;
 };
 
 class AppComponent extends React.Component<Props, State> {
   state: State = {
     addresses: [],
-    origin: new google.maps.LatLng(57.7089355, 11.9669514),
+    origin: {
+      formatted_address: "Stora Nygatan 31, Göteborg",
+      geometry: { location: new google.maps.LatLng(57.7089355, 11.9669514) }
+    } as google.maps.GeocoderResult,
     selectedUsers: [],
     hasSelected: false
   };
@@ -39,7 +42,7 @@ class AppComponent extends React.Component<Props, State> {
     });
   }
 
-  handleSetOrigin = (origin: google.maps.LatLng) => {
+  handleSetOrigin = (origin: google.maps.GeocoderResult) => {
     this.setState({ origin });
   };
 
@@ -76,6 +79,7 @@ class AppComponent extends React.Component<Props, State> {
         ) : (
           <IntroScreen
             google={google}
+            origin={origin}
             setOrigin={this.handleSetOrigin}
             onClickForwardButton={this.handleSetHasSelected}
             toggleUser={this.toggleUser}

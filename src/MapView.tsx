@@ -1,17 +1,10 @@
 import * as React from "react";
 import * as _ from "lodash";
 import {} from "@types/googlemaps";
+import {ClusterWithLegs} from "./Planner";
+import {Location} from "./GoogleAddressConverter";
 
 const { Map, InfoWindow, Marker } = require("google-maps-react");
-const kmeans = require("node-kmeans");
-
-const vectors = [
-  [57.7089355, 11.9669514],
-  [57.6877847, 11.9530877],
-  [57.7041652, 11.9636228],
-  [57.6827079, 11.9556896],
-  [57.6783956, 11.9470382]
-];
 
 const tilesPaths = [
   require("./tiles/tiles000.png"),
@@ -28,39 +21,14 @@ const tilesPaths = [
   require("./tiles/tiles011.png")
 ];
 
-type Cluster = any;
-
 type Props = {
   google: any;
-  trips: {[$key: string]: Cluster};
+  trips: ClusterWithLegs[];
+  origin: Location;
 };
 
 export class MapView extends React.Component<Props> {
 
-  distanceMatrixCallback = (
-    response: google.maps.DistanceMatrixResponse,
-    status: google.maps.DistanceMatrixStatus
-  ) => {
-    console.log(response);
-    console.log(status);
-  };
-
-  /*
-  onMapClicked = (e: Event) => {
-    kmeans.clusterize(vectors, { k: 2 }, (err: Error, res: Cluster[]) => {
-      if (err) console.error(err);
-      else {
-        this.setState(
-          {
-            clusters: res
-          },
-          this.newClustersSet
-        );
-        console.log("%o", res);
-      }
-    });
-  };
-*/
 
   onMarkerClicked = (e: Event) => {
     console.log(e);
@@ -69,16 +37,13 @@ export class MapView extends React.Component<Props> {
   render() {
     const { google, trips } = this.props;
     console.log("helo", trips);
-    const clusters: any[] = [];
-    const latlngs: any[] = [];
 
-
-    const markerData = _.flatMap(clusters, (cluster, i) =>
-      cluster.cluster.map((coordPair: Number[], i2: Number) => (
+    const markerData = _.flatMap(trips, (trip, i) =>
+      trip.legs.map((leg, i2) => (
         <Marker
           key={`${i}${i2}`}
           title={`${i}`}
-          position={{ lat: coordPair[0], lng: coordPair[1] }}
+          position={{ lat: leg.end_location.lat(), lng: leg.end_location.lng() }}
           icon={{
             url: tilesPaths[i],
             scaledSize: new google.maps.Size(32, 40)
@@ -100,10 +65,8 @@ export class MapView extends React.Component<Props> {
             lng: 11.9669514
           }}
         >
+            <Marker position={this.props.origin.coordinate} />
           {markerData}
-          {latlngs.map(latlng => (
-            <Marker key={latlng.place_id} position={latlng.geometry.location} />
-          ))}
         </Map>
         <InfoWindow visible={true}>
           <div>

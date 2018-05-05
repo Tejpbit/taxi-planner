@@ -2,25 +2,36 @@ import * as React from "react";
 import { MapView } from "./MapView"
 import {Component} from "react";
 import {Location} from "./GoogleAddressConverter";
+import {Address} from "./lib/spreadsheet";
+import _ = require("lodash");
+import DirectionsResult = google.maps.DirectionsResult;
+import DirectionsStatus = google.maps.DirectionsStatus;
 
 const kmeans = require("node-kmeans");
 
 
 interface KMeansCluster {
-    centroid: any[];
-    cluster: any;
+    centroid: Number[];
+    cluster: Number[][];
     clusterInd: Number[];
 
 }
 
-interface Cluster extends KMeansCluster {
+interface Derp {
+    centroid: Number[];
+    cluster: Location[];
+}
+
+interface Cluster extends Derp {
     id: any;
 }
 
-type State = {
-  clusters: Cluster[]
-  //clusters?: KMeansCluster[];
+export interface ClusterWithLegs extends Cluster {
+  legs: google.maps.DirectionsLeg[]
+}
 
+type State = {
+  clusters: ClusterWithLegs[]
 }
 
 type Props = {
@@ -29,66 +40,93 @@ type Props = {
   destinations: Location[];
 };
 
+
+const vectors = [
+    [57.7089355, 11.9669514],
+    [57.6877847, 11.9530877],
+    [57.7041652, 11.9636228],
+    [57.6827079, 11.9556896],
+    [57.6783956, 11.9470382]
+];
+
 export class Planner extends Component<Props, State>{
 
   state: State = {
     clusters: []
   };
 
-  componentDidUpdate() {
-    /*
-    * props = {destinations, carCount}
-    * */
-    const vectors = this.props.destinations.map(dest => [dest.coordinate.lat(), dest.coordinate.lng()]);
-    kmeans.clusterize(vectors, { k: 2 }, (err: Error, res: KMeansCluster) => {
-      if (err) console.error(err);
-      else {
-        console.log("%o", res);
-        this.clusterDone(res);
-      }
-    });
-  };
+    plan = () => {
+        this.setState({clusters: []});
 
-  clusterDone = (cluster: KMeansCluster) => {
+        const vectors = this.props.destinations.map(dest => [dest.coordinate.lat(), dest.coordinate.lng()]);
+        kmeans.clusterize(vectors, {k: 3}, (err: Error, res: KMeansCluster[]) => {
+
+                if (err) console.error(err);
+                else {
+                    console.log(res);
+                    const locationMap: Map<string,Location> = new Map<string, Location>();
+                    this.props.destinations.forEach(d => {
+                        locationMap.set(`${d.coordinate.lat()}${d.coordinate.lng()}`, d)
+                    });
+                    this.clusterDone(res.map(({centroid, cluster, clusterInd}) => ({
+                            centroid, cluster: cluster.map( p => locationMap.get(`${p[0]}${p[1]}`) )
+                        })
+                    ));
+                }
+            });
+    };
+
+  clusterDone = (clusters: Derp[]) => {
     const google = this.props.google;
     const origin = this.props.origin;
-    const service = new google.maps.DistanceMatrixService();
+    const service = new google.maps.DirectionsService();
 
-    console.log(cluster);
-    /*
-    cluster.cluster.forEach((cluster: KMeansCluster, index: Number) => {
-      service.getDistanceMatrix(
-        {
-          origins: [origin],
-          destinations: cluster.map(
-              (pair: Number[]) => new google.maps.LatLng(pair[0], pair[1])
-          ),
-          travelMode: "DRIVING"
-        },
-        (
-            response: google.maps.DistanceMatrixResponse,
-            status: google.maps.DistanceMatrixStatus
-        ) => this.distanceMatrixCallback({...cluster, id: index}, response, status)
-      );
+    console.log("clusterDone:", clusters);
+
+    clusters.forEach((cluster: Derp, index: Number) => {
+
+        const destination = _.head(cluster.cluster).coordinate;
+        const waypoints = _.tail(cluster.cluster).map(c => ({location: c.coordinate}));
+        console.log("each cluster", destination, waypoints);
+      service.route({
+          travelMode: "DRIVING",
+          origin: origin.coordinate,
+          destination,
+          waypoints,
+          optimizeWaypoints: true
+      }, (resp: DirectionsResult, status: DirectionsStatus) => this.routeCallback({...cluster, id: index}, resp, status))
 
       }
     );
-  */
+
   };
 
-  distanceMatrixCallback = (
+  routeCallback = (
       cluster: Cluster,
-      response: google.maps.DistanceMatrixResponse,
-      status: google.maps.DistanceMatrixStatus
+      response: DirectionsResult,
+      status: DirectionsStatus
   ) => {
+    console.log("routeCB", cluster, response, status);
+
+    const legs = _.first(response.routes).legs;
+
     this.setState({
-      [cluster.id]: {...cluster, legs: [...response.originAddresses, ...response.destinationAddresses]}
+        clusters: [
+            ...this.state.clusters,
+            {...cluster, legs: legs}
+        ]
+
     });
-    console.log(response);
+    console.log("response: ", response);
     console.log(status);
   };
 
   render() {
-    return <MapView google={this.props.google} trips={{...this.state}}/>
+    console.log("clusters in render: ", this.state.clusters);
+    return (<div>
+          <button onClick={this.plan}>helo</button>
+          <MapView google={this.props.google} origin={this.props.origin} trips={this.state.clusters}/>
+      </div>)
+
   }
 }

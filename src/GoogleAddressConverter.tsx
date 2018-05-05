@@ -63,7 +63,7 @@ class GoogleAddressConverterComponent extends React.Component<Props, State> {
         name: "",
         area: ""
       },
-      coordinate: new google.maps.LatLng(1, 2)
+      coordinate: new google.maps.LatLng(57.7051552,11.9955154)
     };
     return children({ google, destinations: latlngs, origin });
   }

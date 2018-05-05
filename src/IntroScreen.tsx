@@ -79,25 +79,31 @@ export class IntroScreen extends React.Component<Props> {
               }}
             >
               Get cabs for
-              <span style={{
-                fontWeight: "bold",
-                padding: "0 .3em 0 .2em",
-                fontSize: "larger"
-              }}>
+              <span
+                style={{
+                  fontWeight: "bold",
+                  padding: "0 .3em 0 .2em",
+                  fontSize: "larger"
+                }}
+              >
                 {numberPeople}
               </span>
               ->
             </CenterText>
           </LeftDiv>
         </Topbar>
-        <div style={{
-          paddingTop: "50px"
-        }}>
+        <div
+          style={{
+            paddingTop: "50px"
+          }}
+        >
           <div>
             <Header>Where from?</Header>
-            <div style={{
-              display: "flex"
-            }}>
+            <div
+              style={{
+                display: "flex"
+              }}
+            >
               <input
                 type="text"
                 onInput={(event: React.SyntheticEvent<HTMLInputElement>) =>
@@ -113,10 +119,11 @@ export class IntroScreen extends React.Component<Props> {
                 placeholder="Starting address"
                 list="suggestions"
               />
-              {origin &&
+              {origin && (
                 <datalist id="suggestions">
                   <option value={origin.formatted_address} />
-                </datalist>}
+                </datalist>
+              )}
             </div>
           </div>
 
@@ -126,6 +133,7 @@ export class IntroScreen extends React.Component<Props> {
               const userIsSelected = selectedUsers.indexOf(user) !== -1;
               return (
                 <User
+                  key={String(user.id)}
                   user={user}
                   toggleUser={toggleUser}
                   userIsSelected={userIsSelected}

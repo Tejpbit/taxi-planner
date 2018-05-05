@@ -10,6 +10,7 @@ import {
   GACChildProps
 } from "./GoogleAddressConverter";
 import { IntroScreen } from "IntroScreen";
+import { getAddress, getAddressForUser } from "lib/google";
 const logo = require("./logo.svg");
 
 type Props = {
@@ -59,6 +60,7 @@ class AppComponent extends React.Component<Props, State> {
           selectedUsers: state.selectedUsers.filter(u => u.id !== user.id)
         };
       } else {
+        getAddressForUser(this.props.google, user);
         return {
           selectedUsers: [...state.selectedUsers, user]
         };

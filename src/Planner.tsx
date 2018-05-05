@@ -59,8 +59,6 @@ export class Planner extends Component<Props, State> {
       locationMap.set(`${d.coordinate.lat()}${d.coordinate.lng()}`, d);
     });
 
-    console.log(vectors);
-
     kmeans.clusterize(
       vectors,
       { k: Math.ceil(vectors.length / 4) },
@@ -76,7 +74,6 @@ export class Planner extends Component<Props, State> {
                 )
               });
             } else {
-              console.log(currCluster, locationMap);
               this.clusterMore(currCluster, locationMap);
             }
           });
@@ -134,7 +131,6 @@ export class Planner extends Component<Props, State> {
       waypoints: waypoints.length > 0 ? waypoints : undefined,
       optimizeWaypoints: hasWaypoints
     };
-    console.log(JSON.stringify(request, null, 2));
     route(request)
       .then(response => {
         this.routeCallback({ ...cluster, id: uuid() }, response);

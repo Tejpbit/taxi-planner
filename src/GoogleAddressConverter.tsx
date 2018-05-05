@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as _ from "lodash";
-import { getAddress } from "./lib/google";
+import { getAddress, getAddressForUser } from "./lib/google";
 const { GoogleApiWrapper } = require("google-maps-react");
 
 import {} from "@types/googlemaps";
@@ -47,7 +47,7 @@ export class GoogleAddressConverter extends React.Component<Props, State> {
 
     const latlngs = await Promise.all(
       addresses.map(addr =>
-        getAddress(google, `${addr.street}, ${addr.area}`).then(result => {
+        getAddressForUser(google, addr).then(result => {
           return {
             address: addr,
             coordinate: result.geometry.location

@@ -25,7 +25,7 @@ type Props = {
   google: any;
   trips: ClusterWithLegs[];
   origin: google.maps.LatLng;
-  directions: null | google.maps.DirectionsResult;
+  directions: null | google.maps.DirectionsResult[];
 };
 
 export class MapView extends React.Component<Props> {

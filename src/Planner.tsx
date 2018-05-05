@@ -33,7 +33,7 @@ export interface ClusterWithLegs extends Cluster {
 
 type State = {
   clusters: ClusterWithLegs[];
-    response: null | DirectionsResult;
+  responses: null | DirectionsResult[];
 };
 
 type Props = {
@@ -45,11 +45,11 @@ type Props = {
 export class Planner extends Component<Props, State> {
   state: State = {
     clusters: [],
-      response: null
+      responses: []
   };
 
   plan = () => {
-    this.setState({ clusters: [] });
+    this.setState({ clusters: [], responses: [] });
 
     const vectors = this.props.destinations.map(dest => [
       dest.coordinate.lat(),
@@ -150,7 +150,7 @@ export class Planner extends Component<Props, State> {
     const legs = _.first(response.routes).legs;
 
     this.setState({
-        response,
+        responses: [...this.state.responses, response],
       clusters: [...this.state.clusters, { ...cluster, legs: legs }]
     });
   };
@@ -163,7 +163,7 @@ export class Planner extends Component<Props, State> {
           google={this.props.google}
           origin={this.props.origin}
           trips={this.state.clusters}
-          directions={this.state.response}
+          directions={this.state.responses}
         />
       </div>
     );

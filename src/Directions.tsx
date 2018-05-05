@@ -1,16 +1,16 @@
 import * as React from 'react';
 
-
+import * as _ from 'lodash';
 
 type Props = {
     map?: any;
     google?: any;
-    directions: google.maps.DirectionsResult
+    directions: google.maps.DirectionsResult[]
 }
 
 
 export class Directions extends React.Component<Props> {
-    directionsRenderer: google.maps.DirectionsRenderer;
+    directionsRenderers: google.maps.DirectionsRenderer[];
 
     componentDidMount() {
         this.renderDirections();
@@ -21,16 +21,16 @@ export class Directions extends React.Component<Props> {
             this.props.map !== prevProps.map ||
             this.props.directions !==  prevProps.directions
         ) {
-            if (this.directionsRenderer) {
-                this.directionsRenderer.setMap(null);
+            if (this.directionsRenderers) {
+                this.directionsRenderers.forEach(r => r.setMap(null))
             }
             this.renderDirections();
         }
     }
 
     componentWillUnmount() {
-        if (this.directionsRenderer) {
-            this.directionsRenderer.setMap(null);
+        if (this.directionsRenderers) {
+            this.directionsRenderers.forEach(r => r.setMap(null))
         }
     }
 
@@ -45,13 +45,15 @@ export class Directions extends React.Component<Props> {
             return null;
         }
 
-        if (!this.directionsRenderer) {
-            this.directionsRenderer = new google.maps.DirectionsRenderer;
+        if (! directions || ! this.directionsRenderers || directions.length != this.directionsRenderers.length) {
+            this.directionsRenderers = directions.map(d => new google.maps.DirectionsRenderer(d));
         }
 
-        this.directionsRenderer.setDirections(directions);
 
-        this.directionsRenderer.setMap(map);
+        _.zip(directions, this.directionsRenderers).map(d => {
+            d[1].setDirections(d[0]);
+            d[1].setMap(map);
+        });
 
     }
 

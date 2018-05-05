@@ -118,7 +118,7 @@ export class Planner extends Component<Props, State> {
     const waypoints = cluster.cluster
       .filter(val => val != destination)
       .map(c => ({
-        location: c.coordinate,
+        location: `${c.address.street}, ${c.address.area}`,
         stopover: true
       }));
 
@@ -127,7 +127,7 @@ export class Planner extends Component<Props, State> {
     const request = {
       travelMode: google.maps.TravelMode.DRIVING,
       origin,
-      destination: destination.coordinate,
+      destination: `${destination.address.street}, ${destination.address.area}`,
       waypoints: waypoints.length > 0 ? waypoints : undefined,
       optimizeWaypoints: hasWaypoints
     };

@@ -25,16 +25,16 @@ export const TripList = (props: Props) => (
   <TripContainer>
     You'll need {props.trips.length} cars
     {props.trips.map((trip, i) => (
-      <div>
+      <div key={trip.id}>
         <TripHeader>
           <Taxi
             style={{ width: 20, color: colors[i % colors.length], margin: 10 }}
           />
-          {_.last(trip.legs).end_address.split(",")[0]}
+          {_.last(trip.legs).end_address}
         </TripHeader>
 
         {trip.cluster.map(cluster => (
-          <div>
+          <div key={String(cluster.address.id)}>
             {cluster.address.name}, {cluster.address.street}
           </div>
         ))}

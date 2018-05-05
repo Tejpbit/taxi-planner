@@ -22,7 +22,7 @@ export class App extends React.Component<Props, State> {
   state: State = {
     addresses: [],
     selectedUsers: [],
-    hasSelected: false
+    hasSelected: true
   };
 
   async componentDidMount() {

@@ -51,7 +51,9 @@ class GoogleAddressConverterComponent extends React.Component<Props, State> {
       const { google, children } = this.props;
       const destinations: Location[] = [];
       const origin: Location = {
-        address: {
+          address: {
+              id: 0,
+              photo: "",
               street: "",
               name: "",
               area: ""

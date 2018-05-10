@@ -59,7 +59,6 @@ export class Route extends React.Component<Props> {
         icons: [
           {
             repeat: "200px",
-            fixedRotation: false,
             icon: {
               scale: 0.3,
               strokeWeight: 1,

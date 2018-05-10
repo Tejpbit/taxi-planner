@@ -17,18 +17,37 @@ const TripHeader = styled.h3`
   align-items: center;
 `;
 
+const TripElement = styled.div`
+  padding: 1em;
+  :hover {
+    background: #f8e71c;
+  }
+`;
+
 type Props = {
   trips: ClusterWithLegs[];
+  disabledRouteIndexes: number[];
+  toggleRide: (trip: number) => void;
 };
 
 export const TripList = (props: Props) => (
   <TripContainer>
-    You'll need {props.trips.length} {props.trips.length === 1 ? "car" : "cars"}.
+    You'll need {props.trips.length} {props.trips.length === 1 ? "car" : "cars"}
     {props.trips.map((trip, i) => (
-      <div key={trip.id}>
+      <TripElement
+        key={trip.id}
+        onClick={() => props.toggleRide(i)}
+        style={{ opacity: props.disabledRouteIndexes.includes(i) ? 0.6 : 1 }}
+      >
         <TripHeader>
           <Taxi
-            style={{ width: 20, color: colors[i % colors.length], margin: 10 }}
+            style={{
+              width: 20,
+              color: props.disabledRouteIndexes.includes(i)
+                ? "slategray"
+                : colors[i % colors.length],
+              margin: 10
+            }}
           />
           {_.last(trip.legs).end_address}
         </TripHeader>
@@ -38,7 +57,7 @@ export const TripList = (props: Props) => (
             {cluster.address.name}, {cluster.address.street}
           </div>
         ))}
-      </div>
+      </TripElement>
     ))}
   </TripContainer>
 );

@@ -15,7 +15,6 @@ export class Directions extends React.Component<Props> {
       myoverlay.draw = function() {
           this.getPanes().markerLayer.id = "markerLayer";
       };
-      console.log("propsmap", props.map);
       myoverlay.setMap(props.map);
   }
 

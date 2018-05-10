@@ -36,16 +36,40 @@ type Props = {
   directions: null | google.maps.DirectionsResult[];
 };
 
-export class MapView extends React.Component<Props> {
-  onMarkerClicked = (e: Event) => {
-    console.log(e);
+type State = {
+    disabledRouteIndexes: number[];
+}
+
+export class MapView extends React.Component<Props, State> {
+  state: State = {
+      disabledRouteIndexes: []
+  };
+
+  toggleRouteVisibility = (routeIndex: number) => {
+    console.log("routeindex", routeIndex, this.state.disabledRouteIndexes);
+    if (this.state.disabledRouteIndexes.indexOf(routeIndex) == -1) {
+        console.log("Add", [...this.state.disabledRouteIndexes, routeIndex]);
+        this.setState({disabledRouteIndexes: [...this.state.disabledRouteIndexes, routeIndex]});
+
+    } else {
+        console.log("remove new:", this.state.disabledRouteIndexes.filter(i => i != routeIndex));
+        this.setState({
+            disabledRouteIndexes: this.state.disabledRouteIndexes.filter(i => i != routeIndex)
+        });
+    }
   };
 
   render() {
     const { google, trips, origin, directions } = this.props;
+    const { disabledRouteIndexes } = this.state;
+
+    const activeRoutes = directions.map((dir,index) => {
+      return <button onClick={() => this.toggleRouteVisibility(index)}>{index}</button>
+    });
 
     return (
       <RowWithSidebar>
+          {activeRoutes.map((ar,i) => <div key={i} onClick={() => this.toggleRouteVisibility(i)}>{ar}</div>)}
         <Map
           containerStyle={{ position: "relative", flex: 1 }}
           google={google}
@@ -53,7 +77,8 @@ export class MapView extends React.Component<Props> {
           //onClick={this.onMapClicked}
           initialCenter={{ lat: origin.lat(), lng: origin.lng() }}
         >
-          {directions && <Directions directions={directions} />}
+
+          {directions && <Directions directions={directions}disabledRouteIndexes={disabledRouteIndexes}/>}
         </Map>
         <TripList trips={trips} />
       </RowWithSidebar>

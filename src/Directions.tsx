@@ -10,22 +10,13 @@ type Props = {
 };
 
 export class Directions extends React.Component<Props> {
-  directionsRenderers: google.maps.DirectionsRenderer[];
-
   componentWillUpdate(props: Props) {
       let myoverlay = new props.google.maps.OverlayView();
       myoverlay.draw = function() {
-          console.log("helo3");
           this.getPanes().markerLayer.id = "markerLayer";
       };
       console.log("propsmap", props.map);
       myoverlay.setMap(props.map);
-  }
-
-  componentWillUnmount() {
-    if (this.directionsRenderers) {
-      this.directionsRenderers.forEach(r => r.setMap(null));
-    }
   }
 
   render() {

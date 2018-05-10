@@ -23,7 +23,7 @@ type Props = {
 
 export const TripList = (props: Props) => (
   <TripContainer>
-    You'll need {props.trips.length} cars
+    You'll need {props.trips.length} {props.trips.length === 1 ? "car" : "cars"}.
     {props.trips.map((trip, i) => (
       <div key={trip.id}>
         <TripHeader>

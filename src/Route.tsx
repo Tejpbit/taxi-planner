@@ -58,6 +58,7 @@ export class Route extends React.Component<Props> {
       polylineOptions: {
         icons: [
           {
+            fixedRotation: true,
             repeat: "200px",
             icon: {
               scale: 0.3,
